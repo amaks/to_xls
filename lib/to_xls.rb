@@ -17,14 +17,17 @@ class Array
       if columns.any?
         unless options[:headers] == false
           output << "<Row>"
-          columns.each { |column| output << "<Cell><Data ss:Type=\"String\">#{klass.human_attribute_name(column)}</Data></Cell>" }
+          columns.each do |column| 
+            name = I18n.t("helpers.label.#{klass.downcase}.#{column}")
+            output << "<Cell><Data ss:Type=\"String\">#{name}</Data></Cell>" }
+          end
           output << "</Row>"
         end    
 
         self.each do |item|
           output << "<Row>"
           columns.each do |column|
-            value = item.send(column)
+            value = item.public_send(column)
             output << "<Cell><Data ss:Type=\"#{value.is_a?(Integer) ? 'Number' : 'String'}\">#{value}</Data></Cell>"
           end
           output << "</Row>"
